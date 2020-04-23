@@ -1,10 +1,5 @@
 import triangulate from "triangulate-image";
 
-const params = {
-  blur: 0,
-  vertexCount: 300,
-  accuracy: 1,
-};
 const image = document.querySelector(".animated-img");
 
 const animationTypes = {
@@ -22,7 +17,7 @@ const animationTypes = {
     post: () => "opacity: 1;",
   },
   fly: {
-    pre: ({ time, color, points }) => {
+    pre: ({ time, points }) => {
       const modifiedPoints = points
         .split(",")
         .map((xy) => xy.split(" "))
@@ -51,7 +46,32 @@ const createElementFromHTML = (htmlString) => {
   return div.firstElementChild;
 };
 
-const createPolgyon = ({ points, color }, time, idx, type) => {
+const getTriangulationData = ({ image, params }) =>
+  triangulate(params)
+    .fromImage(image)
+    .toSVG()
+    .then(createElementFromHTML)
+    .then((svgEl) => ({
+      height: svgEl.getAttribute("height"),
+      width: svgEl.getAttribute("width"),
+      polygons: svgEl.querySelectorAll("polygon"),
+    }))
+    .then((svg) => ({
+      ...svg,
+      polygons: Array.from(svg.polygons).map((polygon) => ({
+        points: polygon
+          .getAttribute("points")
+          .split(" ")
+          .map((values) => values.split(","))
+          .map(
+            ([a, b]) => `${(a / svg.width) * 100}% ${(b / svg.height) * 100}%`
+          )
+          .join(","),
+        color: polygon.getAttribute("fill"),
+      })),
+    }));
+
+const createPolgyon = ({ points, color, time, idx, type }) => {
   const polygon = document.createElement("div");
   polygon.classList.add("polygon");
 
@@ -69,45 +89,30 @@ const createPolgyon = ({ points, color }, time, idx, type) => {
   return { polygon, promise };
 };
 
-const animateImage = (image, params, time = 5, type) =>
-  triangulate(params)
-    .fromImage(image)
-    .toSVG() // checkout toData method (probably better)
-    .then(createElementFromHTML)
-    .then((svgEl) => ({
-      height: svgEl.getAttribute("height"),
-      width: svgEl.getAttribute("width"),
-      polygons: svgEl.querySelectorAll("polygon"),
-    }))
-    .then((svg) => ({
-      ...svg,
-      opacity: 1,
-      polygons: Array.from(svg.polygons).map((polygon) => ({
-        points: polygon
-          .getAttribute("points")
-          .split(" ")
-          .map((values) => values.split(","))
-          .map(
-            ([a, b]) => `${(a / svg.width) * 100}% ${(b / svg.height) * 100}%`
-          )
-          .join(","),
-        color: polygon.getAttribute("fill"),
-      })),
-    }))
-    .then((svg) =>
-      Promise.all(
-        svg.polygons.map((polygon, idx) => {
-          const { polygon: polygonEl, promise } = createPolgyon(
-            polygon,
-            time,
-            idx,
-            type
-          );
-          document.querySelector(".content").append(polygonEl);
-          return promise;
-        })
-      )
-    );
+const invokePolygons = ({ data, time, type, container }) =>
+  Promise.all(
+    data.polygons.map((polygon, idx) => {
+      const { polygon: polygonEl, promise } = createPolgyon({
+        ...polygon,
+        time,
+        idx,
+        type,
+      });
+      container.append(polygonEl);
+      return promise;
+    })
+  );
+
+const animateImage = ({ image, params, time = 5, type, container }) =>
+  getTriangulationData({ image, params }).then((data) =>
+    invokePolygons({ data, time, type, container })
+  );
+
+const params = {
+  blur: 0,
+  vertexCount: 300,
+  accuracy: 1,
+};
 
 const preParams = {
   ...params,
@@ -116,11 +121,19 @@ const preParams = {
   accuracy: 0.2,
 };
 
-animateImage(image, preParams, 0.55, "fly");
+const container = document.querySelector(".content");
+
+animateImage({
+  image,
+  params: preParams,
+  time: 0.55,
+  type: "fly",
+  container,
+});
 
 setTimeout(
   () =>
-    animateImage(image, params, 0.55, "fly").then(
+    animateImage({ image, params, time: 0.55, type: "fly", container }).then(
       () =>
         (image.style =
           "opacity: 1; transition: opacity 2s cubic-bezier(.7,.3,0,1); z-index: 2; position: relative;")
