@@ -2,51 +2,74 @@ import triangulate from "triangulate-image";
 
 const params = {
   blur: 0,
-  vertexCount: 200,
+  vertexCount: 300,
   accuracy: 1,
-  transparentColor: true,
 };
 const image = document.querySelector(".animated-img");
-image.style = "opacity: 0;";
+
+const animationTypes = {
+  fade: {
+    pre: ({ time, color, points }) => `
+      clip-path: polygon(${points});
+      background: ${color};
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      position: absolute;
+      opacity: 0;
+      transition: opacity ${time}s cubic-bezier(.7,.3,0,1);`,
+    post: () => "opacity: 1;",
+  },
+  fly: {
+    pre: ({ time, color, points }) => {
+      const modifiedPoints = points
+        .split(",")
+        .map((xy) => xy.split(" "))
+        .map(([x, y]) => `${x.replace("%", "") * 1 + Math.random() * 30}% ${y}`)
+        .join(",");
+
+      return `
+        clip-path: polygon(${modifiedPoints});
+        background: transparent;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        position: absolute;
+        transition: -webkit-clip-path ${time}s cubic-bezier(.7, .3, 0, 1), clip-path ${time}s cubic-bezier(.7, .3, 0, 1), background-color ${time}s cubic-bezier(.7, .3, 0, 1);`;
+    },
+    post: ({ points, color }) =>
+      `clip-path: polygon(${points}); background-color: ${color};`,
+  },
+};
 
 const createElementFromHTML = (htmlString) => {
   const div = document.createElement("div");
   div.innerHTML = htmlString.trim();
 
-  // Change this to div.childNodes to support multiple top-level nodes
   return div.firstElementChild;
 };
 
-const createPolgyon = ({ points, color }, time, idx) => {
+const createPolgyon = ({ points, color }, time, idx, type) => {
   const polygon = document.createElement("div");
   polygon.classList.add("polygon");
 
-  polygon.style = `
-    clip-path: polygon(${points});
-    background: ${color};
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    position: absolute;
-    opacity: 0;
-    transition: opacity ${time}s cubic-bezier(.7,.3,0,1);`;
+  polygon.style = animationTypes[type].pre({ time, color, points });
 
   const promise = new Promise((resolve) =>
     setTimeout(() => {
       polygon.style =
         polygon.getAttribute("style") +
-        `
-        opacity: 1;
-      `;
+        animationTypes[type].post({ time, color, points });
       resolve(polygon);
-    }, (100 * idx) / 100)
+    }, (100 * idx) / 20)
   );
 
   return { polygon, promise };
 };
 
-const animateImage = (image, params, time = 5) =>
+const animateImage = (image, params, time = 5, type) =>
   triangulate(params)
     .fromImage(image)
     .toSVG() // checkout toData method (probably better)
@@ -77,7 +100,8 @@ const animateImage = (image, params, time = 5) =>
           const { polygon: polygonEl, promise } = createPolgyon(
             polygon,
             time,
-            idx
+            idx,
+            type
           );
           document.querySelector(".content").append(polygonEl);
           return promise;
@@ -87,14 +111,19 @@ const animateImage = (image, params, time = 5) =>
 
 const preParams = {
   ...params,
-  vertexCount: 100,
+  blur: 1000,
+  vertexCount: 50,
+  accuracy: 0.2,
 };
 
-animateImage(image, { ...preParams, blur: 10, vertexCount: 30 }, 1)
-  .then(() => animateImage(image, preParams, 2))
-  .then(() => animateImage(image, params, 3))
-  .then(
-    () =>
-      (image.style =
-        "opacity: 1; transition: opacity 2s 1s cubic-bezier(.7,.3,0,1); z-index: 2; position: relative;")
-  );
+animateImage(image, preParams, 0.55, "fly");
+
+setTimeout(
+  () =>
+    animateImage(image, params, 0.55, "fly").then(
+      () =>
+        (image.style =
+          "opacity: 1; transition: opacity 2s cubic-bezier(.7,.3,0,1); z-index: 2; position: relative;")
+    ),
+  100
+);
