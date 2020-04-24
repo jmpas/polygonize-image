@@ -1,23 +1,65 @@
 import { getTriangulationData, invokePolygons } from "../../dist/polygons";
 
-const image = document.querySelector(".img");
+const animateGuru = async () => {
+  const image = document.querySelector(".img-2");
+  const container = document.querySelector(".container-2");
 
-const params = {
-  blur: 0,
-  vertexCount: 300,
-  accuracy: 1,
+  const params = {
+    blur: 0,
+    vertexCount: 300,
+    accuracy: 1,
+  };
+
+  const preParams = {
+    blur: 1000,
+    vertexCount: 50,
+    accuracy: 0.2,
+  };
+
+  const data1Promise = getTriangulationData({
+    image,
+    params: preParams,
+  });
+
+  const data2Promise = getTriangulationData({
+    image,
+    params,
+  });
+
+  await invokePolygons({
+    data: await data1Promise,
+    time: 0.5,
+    type: "fade",
+    container,
+  });
+
+  await invokePolygons({
+    data: await data2Promise,
+    time: 0.5,
+    type: "fade",
+    container,
+  });
+
+  image.classList.add("show");
 };
 
-const preParams = {
-  ...params,
-  blur: 1000,
-  vertexCount: 50,
-  accuracy: 0.2,
-};
+const animateShaman = async () => {
+  const image = document.querySelector(".img");
 
-const container = document.querySelector(".container");
+  const params = {
+    blur: 0,
+    vertexCount: 300,
+    accuracy: 1,
+  };
 
-const init = async () => {
+  const preParams = {
+    blur: 1000,
+    vertexCount: 50,
+    accuracy: 0.2,
+  };
+
+  const container = document.querySelector(".container");
+
   const data1Promise = getTriangulationData({
     image,
     params: preParams,
@@ -44,5 +86,7 @@ const init = async () => {
 
   image.classList.add("show");
 };
+
+const init = () => animateGuru() && animateShaman();
 
 init();
