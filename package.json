@@ -1,13 +1,11 @@
 {
-  "name": "polygons",
+  "name": "polygonize-image",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/polygons.js",
+  "repository": "https://github.com/Nipher/polygonize-image.git",
   "scripts": {
     "build": "webpack"
-  },
-  "devServer": {
-    "contentBase": "./dist"
   },
   "license": "MIT",
   "dependencies": {

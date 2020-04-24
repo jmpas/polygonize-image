@@ -1,4 +1,4 @@
-# Polygons
+# Polygonize Image
 
 Animate images with polygons using css [clip-path](https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path)
 
@@ -19,7 +19,7 @@ $ yarn add polygons
 ###### Getting triangulation data from an image
 
 ```javascript
-import { getTriangulationData } from "polygons";
+import { getTriangulationData } from "polygonize-image";
 
 const triangulationData = await getTriangulationData({
   image,
@@ -34,7 +34,7 @@ const triangulationData = await getTriangulationData({
 ###### Rendering polygons using the triangulation data in a container
 
 ```javascript
-import { invokePolygons } from "polygons";
+import { invokePolygons } from "polygonize-image";
 
 const imageContainer = document.querySelector(".container-element");
 

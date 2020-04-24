@@ -1,4 +1,4 @@
-import { getTriangulationData, invokePolygons } from "polygons";
+import { getTriangulationData, invokePolygons } from "polygonize-image";
 
 const animateImage = async ({
   imageSelector,
