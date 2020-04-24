@@ -2939,6 +2939,13 @@ pkg-dir@^3.0.0:
   dependencies:
     find-up "^3.0.0"
 
+polygonize-image@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/polygonize-image/-/polygonize-image-1.0.1.tgz#8b6c21ea1532e4299f8c0439aae19510a1f1e972"
+  integrity sha512-vNroXxCef31yf+G6B5AcDsnOEnaRj9glU9XGvd8ZRg5OuZ7rygd+dS6NV8IB6YJkvY56Sw3lIiyS+FHFAgwEEQ==
+  dependencies:
+    triangulate-image "^0.6.0"
+
 portfinder@^1.0.25:
   version "1.0.25"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.25.tgz#254fd337ffba869f4b9d37edc298059cb4d35eca"

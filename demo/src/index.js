@@ -1,37 +1,18 @@
-import { getTriangulationData, invokePolygons } from "polygonize-image";
+import { invokePolygons } from "polygonize-image";
+import { data1, data2, data3, data4 } from "./triangulation-data";
 
 const animateImage = async ({
   imageSelector,
   containerSelector,
   animation,
+  data1,
+  data2,
 }) => {
   const image = document.querySelector(imageSelector);
   const container = document.querySelector(containerSelector);
 
-  const params = {
-    blur: 0,
-    vertexCount: 300,
-    accuracy: 1,
-  };
-
-  const preParams = {
-    blur: 1000,
-    vertexCount: 50,
-    accuracy: 0.2,
-  };
-
-  const data1Promise = getTriangulationData({
-    image,
-    params: preParams,
-  });
-
-  const data2Promise = getTriangulationData({
-    image,
-    params,
-  });
-
   await invokePolygons({
-    data: await data1Promise,
+    data: data1,
     animation: {
       duration: 0.5,
       type: animation,
@@ -40,7 +21,7 @@ const animateImage = async ({
   });
 
   await invokePolygons({
-    data: await data2Promise,
+    data: data2,
     animation: {
       duration: 0.5,
       type: animation,
@@ -56,11 +37,15 @@ const init = () => {
     imageSelector: ".img",
     containerSelector: ".container",
     animation: "fly",
+    data1: data1,
+    data2: data2,
   });
   animateImage({
     imageSelector: ".img-2",
     containerSelector: ".container-2",
     animation: "fade",
+    data1: data3,
+    data2: data4,
   });
 };
 

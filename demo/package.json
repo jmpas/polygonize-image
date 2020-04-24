@@ -10,6 +10,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "polygonize-image": "^1.0.1",
     "triangulate-image": "^0.6.0"
   },
   "devDependencies": {
