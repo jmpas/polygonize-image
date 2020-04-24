@@ -1,6 +1,6 @@
-# Polygons - 🚧 Work in progress
+# Polygons
 
-Animate images with polygons
+Animate images with polygons using css [clip-path](https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path)
 
 ### Animations
 
