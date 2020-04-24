@@ -10,6 +10,8 @@ Animate images with polygons using css [clip-path](https://developer.mozilla.org
 
 ### Usage
 
+You may use this code to pre generate triangulation data for your images and show to the user the polygons and the animation while the image is loading, or simply cause you feel like adding some "glitter" on your website, or both, feel free to use it however you feel it suits you.
+
 ###### Install it as a dependency
 
 ```
