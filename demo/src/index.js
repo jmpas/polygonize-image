@@ -1,8 +1,12 @@
-import { getTriangulationData, invokePolygons } from "../../dist/polygons";
+import { getTriangulationData, invokePolygons } from "polygons";
 
-const animateGuru = async () => {
-  const image = document.querySelector(".img-2");
-  const container = document.querySelector(".container-2");
+const animateImage = async ({
+  imageSelector,
+  containerSelector,
+  animation,
+}) => {
+  const image = document.querySelector(imageSelector);
+  const container = document.querySelector(containerSelector);
 
   const params = {
     blur: 0,
@@ -28,65 +32,36 @@ const animateGuru = async () => {
 
   await invokePolygons({
     data: await data1Promise,
-    time: 0.5,
-    type: "fade",
+    animation: {
+      duration: 0.5,
+      type: animation,
+    },
     container,
   });
 
   await invokePolygons({
     data: await data2Promise,
-    time: 0.5,
-    type: "fade",
+    animation: {
+      duration: 0.5,
+      type: animation,
+    },
     container,
   });
 
   image.classList.add("show");
 };
 
-const animateShaman = async () => {
-  const image = document.querySelector(".img");
-
-  const params = {
-    blur: 0,
-    vertexCount: 300,
-    accuracy: 1,
-  };
-
-  const preParams = {
-    blur: 1000,
-    vertexCount: 50,
-    accuracy: 0.2,
-  };
-
-  const container = document.querySelector(".container");
-
-  const data1Promise = getTriangulationData({
-    image,
-    params: preParams,
+const init = () => {
+  animateImage({
+    imageSelector: ".img",
+    containerSelector: ".container",
+    animation: "fly",
   });
-
-  const data2Promise = getTriangulationData({
-    image,
-    params,
+  animateImage({
+    imageSelector: ".img-2",
+    containerSelector: ".container-2",
+    animation: "fade",
   });
-
-  await invokePolygons({
-    data: await data1Promise,
-    time: 0.5,
-    type: "fly",
-    container,
-  });
-
-  await invokePolygons({
-    data: await data2Promise,
-    time: 0.5,
-    type: "fly",
-    container,
-  });
-
-  image.classList.add("show");
 };
-
-const init = () => animateGuru() && animateShaman();
 
 init();

@@ -2,7 +2,7 @@
   "name": "polygons",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/polygons.js",
   "scripts": {
     "build": "webpack"
   },
