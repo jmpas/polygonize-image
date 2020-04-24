@@ -1,7 +1,5 @@
 import triangulate from "triangulate-image";
 
-const image = document.querySelector(".animated-img");
-
 const animationTypes = {
   fade: {
     pre: ({ time, color, points }) => `
@@ -46,7 +44,25 @@ const createElementFromHTML = (htmlString) => {
   return div.firstElementChild;
 };
 
-const getTriangulationData = ({ image, params }) =>
+const createPolgyon = ({ points, color, time, idx, type }) => {
+  const polygon = document.createElement("div");
+  polygon.classList.add("polygon");
+
+  polygon.style = animationTypes[type].pre({ time, color, points });
+
+  const promise = new Promise((resolve) =>
+    setTimeout(() => {
+      polygon.style =
+        polygon.getAttribute("style") +
+        animationTypes[type].post({ time, color, points });
+      resolve(polygon);
+    }, (100 * idx) / 20)
+  );
+
+  return { polygon, promise };
+};
+
+export const getTriangulationData = ({ image, params }) =>
   triangulate(params)
     .fromImage(image)
     .toSVG()
@@ -71,25 +87,7 @@ const getTriangulationData = ({ image, params }) =>
       })),
     }));
 
-const createPolgyon = ({ points, color, time, idx, type }) => {
-  const polygon = document.createElement("div");
-  polygon.classList.add("polygon");
-
-  polygon.style = animationTypes[type].pre({ time, color, points });
-
-  const promise = new Promise((resolve) =>
-    setTimeout(() => {
-      polygon.style =
-        polygon.getAttribute("style") +
-        animationTypes[type].post({ time, color, points });
-      resolve(polygon);
-    }, (100 * idx) / 20)
-  );
-
-  return { polygon, promise };
-};
-
-const invokePolygons = ({ data, time, type, container }) =>
+export const invokePolygons = ({ data, time, type, container }) =>
   Promise.all(
     data.polygons.map((polygon, idx) => {
       const { polygon: polygonEl, promise } = createPolgyon({
@@ -103,40 +101,7 @@ const invokePolygons = ({ data, time, type, container }) =>
     })
   );
 
-const animateImage = ({ image, params, time = 5, type, container }) =>
+export const animateImage = ({ image, params, time = 5, type, container }) =>
   getTriangulationData({ image, params }).then((data) =>
     invokePolygons({ data, time, type, container })
   );
-
-const params = {
-  blur: 0,
-  vertexCount: 300,
-  accuracy: 1,
-};
-
-const preParams = {
-  ...params,
-  blur: 1000,
-  vertexCount: 50,
-  accuracy: 0.2,
-};
-
-const container = document.querySelector(".content");
-
-animateImage({
-  image,
-  params: preParams,
-  time: 0.55,
-  type: "fly",
-  container,
-});
-
-setTimeout(
-  () =>
-    animateImage({ image, params, time: 0.55, type: "fly", container }).then(
-      () =>
-        (image.style =
-          "opacity: 1; transition: opacity 2s cubic-bezier(.7,.3,0,1); z-index: 2; position: relative;")
-    ),
-  100
-);

@@ -11,20 +11,30 @@
       margin: 0;
     }
 
-    .animated-img {
+    .hide {
       opacity: 0;
+    }
+
+    .show {
+      opacity: 1;
+      transition: opacity 2s cubic-bezier(0.7, 0.3, 0, 1);
+    }
+
+    .img {
+      position: relative;
+      z-index: 2;
       height: 100%;
     }
 
-    .content {
+    .container {
       height: 100vh;
       position: relative;
       display: inline-block;
     }
   </style>
   <body>
-    <span class="content">
-      <img class="animated-img" src="/native-american.png" />
+    <span class="container">
+      <img class="img hide" src="/native-american.png" />
     </span>
     <script src="app.bundle.js"></script>
   </body>
