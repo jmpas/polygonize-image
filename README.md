@@ -13,7 +13,7 @@ Animate images with polygons using css [clip-path](https://developer.mozilla.org
 ###### Install it as a dependency
 
 ```
-$ yarn add polygons
+$ yarn add polygonize-image
 ```
 
 ###### Getting triangulation data from an image
