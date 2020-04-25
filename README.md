@@ -8,6 +8,8 @@ Animate images with polygons using css [clip-path](https://developer.mozilla.org
 | ---------------------------------------- | ---------------------------------------- |
 | ![polygons animation fade demo](fly.gif) | ![polygons animation fly demo](fade.gif) |
 
+[Live demo](https://nipher.io/polygonize-image/)
+
 ### Usage
 
 You may use this code to pre generate triangulation data for your images and show to the user the polygons and the animation while the image is loading, or simply cause you feel like adding some "glitter" on your website, or both, feel free to use it however you feel it suits you.
@@ -22,6 +24,8 @@ $ yarn add polygonize-image
 
 ```javascript
 import { getTriangulationData } from "polygonize-image";
+
+const image = document.querySelector('.my-image')
 
 const triangulationData = await getTriangulationData({
   image,
