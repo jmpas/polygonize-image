@@ -2,6 +2,7 @@
   "name": "polygonize-image",
   "version": "1.0.2",
   "description": "",
+  "sideEffects": false,
   "main": "dist/polygons.js",
   "module": "src/index.js",
   "repository": "https://github.com/Nipher/polygonize-image.git",
