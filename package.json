@@ -1,6 +1,6 @@
 {
   "name": "polygonize-image",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "sideEffects": false,
   "main": "dist/polygons.js",
