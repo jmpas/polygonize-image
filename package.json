@@ -1,6 +1,6 @@
 {
   "name": "polygonize-image",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "sideEffects": false,
   "main": "dist/polygons.js",
@@ -9,6 +9,10 @@
   "scripts": {
     "build": "webpack"
   },
+  "files": [
+    "src",
+    "dist"
+  ],
   "license": "MIT",
   "dependencies": {
     "triangulate-image": "^0.6.0"
